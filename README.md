@@ -1,10 +1,18 @@
 <div align="center">
 
-<img src="public/droiddock-icon.png" width="88" alt="DroidDock icon" />
+<a href="https://himanshudev28.github.io/DroidDockWebsite/">
+  <img src="public/droiddock-icon.png" width="88" alt="DroidDock icon — opens the live site" />
+</a>
 
 # DroidDock — Website
 
 ### The marketing site and documentation for [DroidDock](https://github.com/himanshudev28/MacDroid), the Android ↔ Mac bridge.
+
+### [**himanshudev28.github.io/DroidDockWebsite**](https://himanshudev28.github.io/DroidDockWebsite/)
+
+[![Visit the live site](https://img.shields.io/badge/Visit_the_live_site-F5A623?style=for-the-badge&logoColor=0D0D12)](https://himanshudev28.github.io/DroidDockWebsite/)
+
+<br />
 
 ![React](https://img.shields.io/badge/React-19-1f6feb?style=for-the-badge&logo=react&logoColor=white)
 ![Vite](https://img.shields.io/badge/Vite-7-646CFF?style=for-the-badge&logo=vite&logoColor=white)
@@ -13,11 +21,12 @@
 ![TypeScript](https://img.shields.io/badge/TypeScript-strict-3178C6?style=for-the-badge&logo=typescript&logoColor=white)
 
 [![Deploy to GitHub Pages](https://github.com/himanshudev28/DroidDockWebsite/actions/workflows/deploy-pages.yml/badge.svg)](https://github.com/himanshudev28/DroidDockWebsite/actions/workflows/deploy-pages.yml)
-[![Live site](https://img.shields.io/badge/live-himanshudev28.github.io%2FDroidDockWebsite-F5A623?style=flat-square)](https://himanshudev28.github.io/DroidDockWebsite/)
 
 <br />
 
-<img src=".github/media/hero-dark.webp" alt="The DroidDock site in dark mode: a wide headline reading 'Stop reaching for your phone', with a Mac window and phone connected by an amber signal bus" width="100%" />
+<a href="https://himanshudev28.github.io/DroidDockWebsite/">
+  <img src=".github/media/hero-dark.webp" alt="The DroidDock site in dark mode: a wide headline reading 'Stop reaching for your phone', with a Mac window and phone connected by an amber signal bus" width="100%" />
+</a>
 
 </div>
 
