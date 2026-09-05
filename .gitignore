@@ -1,0 +1,10 @@
+node_modules
+dist
+.DS_Store
+*.local
+tsconfig.tsbuildinfo
+
+# Source screen recordings (~37 MB). Only the derived stills in
+# public/shots and the encoded loop in public/clips are committed —
+# see the Media section of README.md to regenerate them.
+media-src/

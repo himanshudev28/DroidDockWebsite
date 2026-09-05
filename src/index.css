@@ -1,0 +1,337 @@
+@import "tailwindcss";
+@import "./fonts.css";
+
+/* ------------------------------------------------------------------ *
+ * DroidDock — design tokens
+ *
+ * Identity-preserving: the app ships #0D0D12 graphite, #F5A623 amber and
+ * #34C759 green, restated here in OKLCH so ramps interpolate
+ * perceptually.
+ *
+ * Two ramps, dark by default. Utilities read --color-*, which points at
+ * --t-*, which the blocks below swap wholesale. That indirection is what
+ * lets `.on-dark` pin a subtree to the dark ramp on a light page — used
+ * for the device mockups, which are pictures of a dark app and shouldn't
+ * invert with the site.
+ *
+ * `.etched` further down still uses light-dark(); that is fine, because
+ * it sets a real property rather than a custom one, so it resolves
+ * against the element's own color-scheme.
+ * ------------------------------------------------------------------ */
+@theme {
+  /* The dark ramp is the design default and lives here so the utilities
+     exist. The light ramp overrides these names in @layer base below —
+     which is also why `.on-dark` has to re-declare the --color-* names
+     rather than some indirection variable: a custom property is
+     substituted where it is DECLARED, so anything declared only on :root
+     inherits already-resolved and can't be flipped further down. */
+  --color-ink:       oklch(0.145 0.012 285);
+  --color-panel:     oklch(0.190 0.013 285);
+  --color-panel-2:   oklch(0.235 0.0125 285);
+  --color-line:      oklch(0.315 0.011 285);
+  --color-line-2:    oklch(0.400 0.011 285);
+  --color-fg:        oklch(0.965 0.004 90);
+  --color-fg-2:      oklch(0.775 0.008 90);
+  --color-fg-3:      oklch(0.645 0.011 80);
+  --color-fg-4:      oklch(0.530 0.011 80);
+  --color-amber-hi:  oklch(0.850 0.140 78);
+  --color-amber-dim: oklch(0.560 0.110 74);
+  --color-amber-ink: oklch(0.795 0.152 74);
+  --color-green:     oklch(0.780 0.175 148);
+
+  /* Fills stay brand-bright in both themes, so text on top of them must
+     be pinned dark — `ink` is the *page*, and on a light page that would
+     put near-white on amber (1.6:1). */
+  --color-amber:     oklch(0.795 0.152 74);
+  --color-on-amber:  oklch(0.145 0.012 285);   /* 8.4:1 on amber, both themes */
+
+  --font-sans:    "Archivo", ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif;
+  --font-display: "Archivo", ui-sans-serif, system-ui, -apple-system, sans-serif;
+  --font-mono:    "Martian Mono", ui-monospace, "SF Mono", Menlo, monospace;
+
+  /* Exponential ease-outs. No bounce, no elastic. */
+  --ease-out-quart: cubic-bezier(0.25, 1, 0.5, 1);
+  --ease-out-quint: cubic-bezier(0.22, 1, 0.36, 1);
+  --ease-out-expo:  cubic-bezier(0.16, 1, 0.3, 1);
+
+  /* Semantic stacking order — never arbitrary 999s */
+  --z-rail:    10;
+  --z-sticky:  30;
+  --z-nav:     40;
+  --z-overlay: 50;
+  --z-pointer: 60;
+}
+
+@layer base {
+  /* Both ramps as raw values, each written once. Contrast-checked before
+     being written down; light is the tighter set. Ratios: fg 17.9/12.3,
+     fg-2 9.7/6.5, fg-3 6.0/4.7, amber-ink 10.2/4.7, green 10.6/5.0. */
+  :root {
+    --d-ink:       oklch(0.145 0.012 285);   --l-ink:       oklch(0.905 0.008 72);
+    --d-panel:     oklch(0.190 0.013 285);   --l-panel:     oklch(0.945 0.006 72);
+    --d-panel-2:   oklch(0.235 0.0125 285);  --l-panel-2:   oklch(0.975 0.004 72);
+    --d-line:      oklch(0.315 0.011 285);   --l-line:      oklch(0.845 0.010 72);
+    --d-line-2:    oklch(0.400 0.011 285);   --l-line-2:    oklch(0.760 0.012 72);
+    --d-fg:        oklch(0.965 0.004 90);    --l-fg:        oklch(0.245 0.020 285);
+    --d-fg-2:      oklch(0.775 0.008 90);    --l-fg-2:      oklch(0.415 0.018 285);
+    --d-fg-3:      oklch(0.645 0.011 80);    --l-fg-3:      oklch(0.492 0.016 285);
+    --d-fg-4:      oklch(0.530 0.011 80);    --l-fg-4:      oklch(0.578 0.014 285);
+    --d-amber-hi:  oklch(0.850 0.140 78);    --l-amber-hi:  oklch(0.735 0.150 66);
+    --d-amber-dim: oklch(0.560 0.110 74);    --l-amber-dim: oklch(0.700 0.120 70);
+    --d-amber-ink: oklch(0.795 0.152 74);    --l-amber-ink: oklch(0.500 0.120 50);
+    --d-green:     oklch(0.780 0.175 148);   --l-green:     oklch(0.465 0.115 150);
+  }
+
+  /* Light when the OS asks and dark isn't pinned … */
+  @media (prefers-color-scheme: light) {
+    :root:not([data-theme='dark']) {
+      color-scheme: light;
+      --color-ink: var(--l-ink);
+      --color-panel: var(--l-panel);
+      --color-panel-2: var(--l-panel-2);
+      --color-line: var(--l-line);
+      --color-line-2: var(--l-line-2);
+      --color-fg: var(--l-fg);
+      --color-fg-2: var(--l-fg-2);
+      --color-fg-3: var(--l-fg-3);
+      --color-fg-4: var(--l-fg-4);
+      --color-amber-hi: var(--l-amber-hi);
+      --color-amber-dim: var(--l-amber-dim);
+      --color-amber-ink: var(--l-amber-ink);
+      --color-green: var(--l-green);
+    }
+  }
+  /* … or when the visitor pins it. */
+  :root[data-theme='light'] {
+    color-scheme: light;
+    --color-ink: var(--l-ink);
+    --color-panel: var(--l-panel);
+    --color-panel-2: var(--l-panel-2);
+    --color-line: var(--l-line);
+    --color-line-2: var(--l-line-2);
+    --color-fg: var(--l-fg);
+    --color-fg-2: var(--l-fg-2);
+    --color-fg-3: var(--l-fg-3);
+    --color-fg-4: var(--l-fg-4);
+    --color-amber-hi: var(--l-amber-hi);
+    --color-amber-dim: var(--l-amber-dim);
+    --color-amber-ink: var(--l-amber-ink);
+    --color-green: var(--l-green);
+  }
+  :root[data-theme='dark'] { color-scheme: dark; }
+
+  /* Pin a subtree to the dark ramp regardless of page theme. The device
+     mockups are pictures of a dark app and shouldn't invert. */
+  .on-dark {
+    color-scheme: dark;
+    --color-ink: var(--d-ink);
+    --color-panel: var(--d-panel);
+    --color-panel-2: var(--d-panel-2);
+    --color-line: var(--d-line);
+    --color-line-2: var(--d-line-2);
+    --color-fg: var(--d-fg);
+    --color-fg-2: var(--d-fg-2);
+    --color-fg-3: var(--d-fg-3);
+    --color-fg-4: var(--d-fg-4);
+    --color-amber-hi: var(--d-amber-hi);
+    --color-amber-dim: var(--d-amber-dim);
+    --color-amber-ink: var(--d-amber-ink);
+    --color-green: var(--d-green);
+  }
+
+  *,
+  *::before,
+  *::after { box-sizing: border-box; }
+
+  html {
+    scroll-behavior: smooth;
+    scroll-padding-top: 5.5rem;
+    -webkit-text-size-adjust: 100%;
+  }
+
+  body {
+    margin: 0;
+    background: var(--color-ink);
+    color: var(--color-fg-2);
+    font-family: var(--font-sans);
+    font-variation-settings: "wdth" 100;
+    font-size: 1.0625rem;
+    /* light type on dark reads lighter — buy back the leading */
+    line-height: 1.65;
+    -webkit-font-smoothing: antialiased;
+    text-rendering: optimizeLegibility;
+    overflow-x: clip;
+  }
+
+  h1, h2, h3, h4 {
+    color: var(--color-fg);
+    text-wrap: balance;
+    margin: 0;
+  }
+
+  p { text-wrap: pretty; }
+
+  :focus-visible {
+    outline: 2px solid var(--color-amber-ink);
+    outline-offset: 3px;
+    border-radius: 2px;
+  }
+
+  ::selection {
+    background: var(--color-amber);
+    color: oklch(0.145 0.012 285);
+  }
+
+  ::-webkit-scrollbar { width: 11px; height: 11px; }
+  ::-webkit-scrollbar-track { background: var(--color-ink); }
+  ::-webkit-scrollbar-thumb {
+    background: var(--color-line);
+    border: 3px solid var(--color-ink);
+    border-radius: 99px;
+  }
+  ::-webkit-scrollbar-thumb:hover { background: var(--color-line-2); }
+}
+
+@layer components {
+  /* Display type: Archivo pushed to its expanded width axis. Industrial
+     signage, not SaaS-geometric. Tracking stays above the -0.04em floor. */
+  .display {
+    font-family: var(--font-display);
+    font-variation-settings: "wdth" 118;
+    font-weight: 700;
+    letter-spacing: -0.032em;
+    line-height: 0.98;
+    color: var(--color-fg);
+  }
+
+  /* Readouts: mono is earned here — these are literal instrument values
+     (ports, codecs, versions, byte counts), not decoration. */
+  .readout {
+    font-family: var(--font-mono);
+    font-variation-settings: "wdth" 100;
+    font-size: 0.6875rem;
+    font-weight: 500;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--color-fg-3);
+    font-feature-settings: "tnum" 1;
+  }
+
+  .measure { max-width: 62ch; }
+
+  .prose-doc {
+    color: var(--color-fg-2);
+  }
+  .prose-doc h2 {
+    font-family: var(--font-display);
+    font-variation-settings: "wdth" 112;
+    font-weight: 700;
+    letter-spacing: -0.022em;
+    font-size: 1.6rem;
+    margin: 3.25rem 0 1rem;
+  }
+  .prose-doc h3 {
+    font-size: 1.125rem;
+    font-weight: 650;
+    margin: 2.25rem 0 0.5rem;
+  }
+  .prose-doc p { margin: 0 0 1rem; max-width: 68ch; }
+  .prose-doc ul { list-style: disc; margin: 0 0 1.25rem; padding-left: 1.15rem; max-width: 68ch; }
+  .prose-doc ol { list-style: decimal; margin: 0 0 1.25rem; padding-left: 1.15rem; max-width: 68ch; }
+  .prose-doc li { margin: 0 0 0.5rem; }
+  .prose-doc li::marker { color: var(--color-amber-ink); }
+  .prose-doc a {
+    color: var(--color-amber-ink);
+    text-decoration: underline;
+    text-underline-offset: 3px;
+    text-decoration-color: color-mix(in oklch, var(--color-amber-ink) 40%, transparent);
+  }
+  .prose-doc a:hover { text-decoration-color: currentColor; }
+  .prose-doc strong { color: var(--color-fg); font-weight: 650; }
+  .prose-doc code {
+    font-family: var(--font-mono);
+    font-size: 0.78em;
+    background: var(--color-panel-2);
+    border: 1px solid var(--color-line);
+    border-radius: 4px;
+    padding: 0.1em 0.35em;
+  }
+}
+
+@layer utilities {
+  /* Etched panel edge. On dark it's an inner highlight (a milled bezel
+     catching light); on light the same bezel reads as an inner shade. */
+  .etched {
+    box-shadow:
+      inset 0 1px 0 light-dark(
+        color-mix(in oklch, white 90%, transparent),
+        color-mix(in oklch, oklch(0.965 0.004 90) 7%, transparent)
+      ),
+      0 1px 2px light-dark(rgb(0 0 0 / 0.08), rgb(0 0 0 / 0.4));
+  }
+
+  /* amber-ink tracks the theme, so the ring stays visible on the light
+     ground where flat amber is only 1.65:1 against the page. */
+  .lamp {
+    box-shadow:
+      0 0 0 1px color-mix(in oklch, var(--color-amber-ink) 55%, transparent),
+      0 0 12px -1px color-mix(in oklch, var(--color-amber) 55%, transparent);
+  }
+
+  .lamp-green {
+    box-shadow:
+      0 0 0 1px color-mix(in oklch, var(--color-green) 40%, transparent),
+      0 0 12px -1px color-mix(in oklch, var(--color-green) 55%, transparent);
+  }
+
+  /* Instrument-panel ground: a faint square grid, clipped so it never
+     fights the type. */
+  .panel-grid {
+    background-image:
+      linear-gradient(to right, color-mix(in oklch, var(--color-line) 55%, transparent) 1px, transparent 1px),
+      linear-gradient(to bottom, color-mix(in oklch, var(--color-line) 55%, transparent) 1px, transparent 1px);
+    background-size: 56px 56px;
+  }
+}
+
+/* Reduced motion: kill travel and choreography, keep state legible.
+   Nothing on this site is *revealed* by motion, so removing it costs no
+   information. JS-driven animation is handled separately by
+   <MotionConfig reducedMotion="user">. */
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+/* ------------------------------------------------------------------ *
+ * Reticle pointer
+ *
+ * The class is added by the Pointer component only after it has decided
+ * it can run (fine pointer, motion allowed) — so the native cursor is
+ * never hidden unless something is definitely replacing it. Text fields
+ * keep their I-beam, because a caret target needs a caret cursor.
+ * ------------------------------------------------------------------ */
+@media (pointer: fine) {
+  html.has-reticle,
+  html.has-reticle a[href],
+  html.has-reticle button,
+  html.has-reticle [role="radio"],
+  html.has-reticle [role="tab"],
+  html.has-reticle summary { cursor: none; }
+
+  html.has-reticle input,
+  html.has-reticle textarea,
+  html.has-reticle select,
+  html.has-reticle [contenteditable="true"] { cursor: auto; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html.has-reticle, html.has-reticle * { cursor: auto !important; }
+}
