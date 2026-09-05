@@ -3,11 +3,11 @@ import { defineConfig } from 'vite'
 import react from '@vitejs/plugin-react'
 import tailwindcss from '@tailwindcss/vite'
 
-// `base` matters for GitHub Pages project sites (user.github.io/<repo>/).
-// Build with BASE_PATH=/MacDroid/ for that; the default suits a custom
-// domain, Netlify, Vercel or Cloudflare Pages.
+// Deployed to a GitHub Pages project site, so the default base is the repo
+// sub-path. Override for a custom domain or a root-hosted deploy:
+//   BASE_PATH=/ npm run build
 export default defineConfig({
-  base: process.env.BASE_PATH ?? '/',
+  base: process.env.BASE_PATH ?? '/DroidDockWebsite/',
   plugins: [react(), tailwindcss()],
   build: {
     target: 'es2022',

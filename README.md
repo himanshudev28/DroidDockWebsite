@@ -12,6 +12,9 @@
 ![Motion](https://img.shields.io/badge/Motion-13-F5A623?style=for-the-badge)
 ![TypeScript](https://img.shields.io/badge/TypeScript-strict-3178C6?style=for-the-badge&logo=typescript&logoColor=white)
 
+[![Deploy to GitHub Pages](https://github.com/himanshudev28/DroidDockWebsite/actions/workflows/deploy-pages.yml/badge.svg)](https://github.com/himanshudev28/DroidDockWebsite/actions/workflows/deploy-pages.yml)
+[![Live site](https://img.shields.io/badge/live-himanshudev28.github.io%2FDroidDockWebsite-F5A623?style=flat-square)](https://himanshudev28.github.io/DroidDockWebsite/)
+
 <br />
 
 <img src=".github/media/hero-dark.webp" alt="The DroidDock site in dark mode: a wide headline reading 'Stop reaching for your phone', with a Mac window and phone connected by an amber signal bus" width="100%" />
@@ -93,17 +96,29 @@ host without a rewrite rule.
 
 ## Deploying
 
-`dist/` is a plain static bundle. For a GitHub Pages **project** site
-(`user.github.io/<repo>/`), bake the sub-path in:
+Every push to `main` builds and publishes to GitHub Pages via
+[`.github/workflows/deploy-pages.yml`](.github/workflows/deploy-pages.yml).
+Nothing to run by hand.
+
+**Live:** https://himanshudev28.github.io/DroidDockWebsite/
+
+Because that's a *project* site, everything is served from a sub-path, so
+`base` in [`vite.config.ts`](vite.config.ts) defaults to
+`/DroidDockWebsite/`. Moving to a custom domain or a root-hosted deploy means
+overriding it:
 
 ```bash
-BASE_PATH=/DroidDockWebsite/ npm run build
+BASE_PATH=/ npm run build
 ```
 
-For a custom domain, Netlify, Vercel or Cloudflare Pages, plain `npm run build`
-is correct. Internal links and `/public` assets referenced from JSX all go
-through [`src/lib/paths.ts`](src/lib/paths.ts) — Vite rewrites URLs it can see
-at build time, but not strings built at runtime.
+Internal links and `/public` assets referenced from JSX all go through
+[`src/lib/paths.ts`](src/lib/paths.ts) — Vite rewrites URLs it can see at build
+time, but not strings built at runtime, so a sub-path deploy would otherwise
+ship broken image and video `src`s.
+
+> [!NOTE]
+> The workflow passes `BASE_PATH` from the repository name, so renaming the
+> repo moves the deploy without a code change.
 
 ## Theming
 
